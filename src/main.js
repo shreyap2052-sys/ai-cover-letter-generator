@@ -78,6 +78,7 @@ const skills = document.getElementById("skills");
 
 const generateBtn = document.getElementById("generateBtn");
 const coverLetterOutput = document.getElementById("coverLetterOutput");
+const copyBtn = document.getElementById("copyBtn");
 
 generateBtn.addEventListener("click", () => {
 
@@ -106,5 +107,37 @@ ${name}`;
     coverLetterOutput.innerHTML = `
     <p>${coverLetter.replace(/\n/g, "<br><br>")}</p>
      `;
+
+});
+
+copyBtn.addEventListener("click", async () => {
+
+    const coverLetter = coverLetterOutput.innerText.trim();
+
+    if (
+        !coverLetter ||
+        coverLetter === "Your generated cover letter will appear here."
+    ) {
+        alert("Generate a cover letter first.");
+        return;
+    }
+
+    try {
+
+        await navigator.clipboard.writeText(coverLetter);
+
+        copyBtn.textContent = "Copied!";
+
+        setTimeout(() => {
+
+            copyBtn.textContent = "Copy";
+
+        }, 2000);
+
+    } catch (error) {
+
+        alert("Failed to copy the cover letter.");
+
+    }
 
 });
