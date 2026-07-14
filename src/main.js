@@ -1,3 +1,4 @@
+import { generateCoverLetter } from "./gemini";
 import "./style.css";
 
 document.querySelector("#app").innerHTML = `
@@ -80,7 +81,7 @@ const generateBtn = document.getElementById("generateBtn");
 const coverLetterOutput = document.getElementById("coverLetterOutput");
 const copyBtn = document.getElementById("copyBtn");
 
-generateBtn.addEventListener("click", () => {
+generateBtn.addEventListener("click", async () => {
 
     const name = candidateName.value.trim();
     const role = jobRole.value.trim();
@@ -92,23 +93,34 @@ generateBtn.addEventListener("click", () => {
         return;
     }
 
-    const coverLetter = `Dear Hiring Manager,
+    generateBtn.disabled = true;
+generateBtn.textContent = "Generating...";
 
-I am writing to express my interest in the ${role} position at ${company}.
+try {
 
-My name is ${name}, and I have experience with ${skillSet}. I am eager to contribute my skills while continuing to learn and grow as a professional.
+    const coverLetter = await generateCoverLetter({
+        name,
+        role,
+        company,
+        skills: skillSet
+    });
 
-Thank you for taking the time to review my application. I look forward to the opportunity to discuss how I can contribute to your team.
+    coverLetterOutput.innerHTML = coverLetter.replace(/\n/g, "<br>");
 
-Sincerely,
+}
+catch (error) {
 
-${name}`;
+    console.error(error);
 
-    coverLetterOutput.innerHTML = `
-    <p>${coverLetter.replace(/\n/g, "<br><br>")}</p>
-     `;
+    alert("Unable to generate the cover letter. Please try again.");
 
-});
+}
+finally {
+
+    generateBtn.disabled = false;
+    generateBtn.textContent = "Generate Cover Letter";
+
+}});
 
 copyBtn.addEventListener("click", async () => {
 
